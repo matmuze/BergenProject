@@ -1,0 +1,16 @@
+DEFINE_MOLECULES
+{
+  vol1
+  {
+    DIFFUSION_CONSTANT_3D = 1e-06
+  }
+  vol2
+  {
+    DIFFUSION_CONSTANT_3D = 1e-06
+  }
+  surf1
+  {
+    DIFFUSION_CONSTANT_2D = 1e-07
+  }
+}
+

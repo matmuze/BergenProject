@@ -1,0 +1,12 @@
+VIZ_OUTPUT
+{
+  MODE = DREAMM_V3
+  FILENAME = "./viz_data/seed_" & seed & "/Scene"
+  MOLECULES
+  {
+    NAME_LIST {vol1 vol2 surf1}
+    ITERATION_NUMBERS {ALL_DATA @ ALL_ITERATIONS}
+  }
+  
+}
+

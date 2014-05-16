@@ -1,0 +1,8 @@
+REACTION_DATA_OUTPUT
+{
+  ITERATION_LIST = [[1 TO iters STEP 1]]
+  HEADER = ON
+  {TRIGGER["*",Scene.Cube]} => "rxn_data/reactions_pos.txt"
+
+}
+
