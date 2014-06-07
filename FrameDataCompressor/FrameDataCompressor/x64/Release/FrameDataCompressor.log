@@ -1,0 +1,12 @@
+﻿Build started 25/05/2014 20:33:38.
+     1>Project "C:\Users\Mathieu\Documents\Visual Studio 2013\Projects\FrameDataCompressor\FrameDataCompressor\FrameDataCompressor.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Mathieu\Documents\Visual Studio 2013\Projects\FrameDataCompressor\x64\Release\FrameDataCompressor.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Mathieu\Documents\Visual Studio 2013\Projects\FrameDataCompressor\FrameDataCompressor\/zlib/lib" zdll.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Mathieu\Documents\Visual Studio 2013\Projects\FrameDataCompressor\x64\Release\FrameDataCompressor.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Mathieu\Documents\Visual Studio 2013\Projects\FrameDataCompressor\x64\Release\FrameDataCompressor.lib" /MACHINE:X64 x64\Release\FrameDataCompressor.obj
+         x64\Release\stdafx.obj
+     1>FrameDataCompressor.obj : error LNK2001: unresolved external symbol compress
+     1>C:\Users\Mathieu\Documents\Visual Studio 2013\Projects\FrameDataCompressor\x64\Release\FrameDataCompressor.exe : fatal error LNK1120: 1 unresolved externals
+     1>Done Building Project "C:\Users\Mathieu\Documents\Visual Studio 2013\Projects\FrameDataCompressor\FrameDataCompressor\FrameDataCompressor.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.16
