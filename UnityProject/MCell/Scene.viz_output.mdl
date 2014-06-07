@@ -1,13 +1,26 @@
-VIZ_DATA_OUTPUT
+VIZ_OUTPUT
 {
-    MODE = ASCII
-    MOLECULE_FILE_PREFIX = "viz_data/" & "molecules"
-    ITERATION_LIST = [[1 TO iters STEP 1]]
-    STATE_VALUES
+    FILENAME = "viz_data/positions"
+    MOLECULES
     {
-        vol1         = 1
-        vol2         = 2
-        surf1        = 3
+        NAME_LIST { ALL_MOLECULES }
+        ITERATION_NUMBERS
+        {
+            ALL_DATA     @ ALL_ITERATIONS
+        }
     }
 }
+
+//VIZ_DATA_OUTPUT
+//{
+//   MODE = ASCII
+//    MOLECULE_FILE_PREFIX = "viz_data/molecules"
+//    ITERATION_LIST = [[1 TO iters STEP 1]]
+//    STATE_VALUES
+//    {
+//        vol1         = 1
+//        vol2         = 2
+//        surf1        = 3
+//    }
+//}
 
