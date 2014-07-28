@@ -1,6 +1,6 @@
-iters = 1000
+iters = 100000
 ITERATIONS = iters
-TIME_STEP = 1e-8
+TIME_STEP = 5e-8
 
 INCLUDE_FILE = "Scene.initialization.mdl"
 
