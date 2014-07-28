@@ -11,26 +11,67 @@
 
 using namespace std;
 
+void getFrameData(string dirPath, int& frameCount, int& particleCount)
+{
+	DIR *dir;
+	struct dirent *entry;
+	
+	if ((dir = opendir(dirPath.c_str())) != NULL)
+	{
+		while ((entry = readdir(dir)) != NULL)
+		{
+			string strEntry = entry->d_name;
+			size_t findRes = strEntry.find(".dat");
+
+			if (findRes != string::npos)
+			{
+				frameCount ++;
+
+				if(particleCount == 0)
+				{
+					string filePath = dirPath + strEntry;
+					string dummy;
+					ifstream File(filePath);
+
+					if (File)
+					{
+						while (getline(File, dummy))
+						{
+							particleCount ++;
+						}
+					}
+				}				
+			}		
+		}
+
+		closedir(dir);
+	}
+}
+
 int _tmain(int argc, TCHAR *argv[])
 {
-	string dirPath = "C:\\Users\\Mathieu\\Desktop\\mathieu\\BergenProject\\UnityProject\\MCell\\viz_data\\";	
+	string dirPath = ".\\";	
 	string dataFilePath = dirPath + "data.bin";
 	string indexFilePath = dirPath + "index.bin";
 
-	const int FRAME_COUNT = 1000;
-	const int PARTICLE_COUNT = 4000;
-	const size_t PARTICLE_FRAME_SIZE = 32;
+	DIR *dir;
+	struct dirent *entry;
 
-	unsigned char* uncompressedFrame = new unsigned char[PARTICLE_COUNT * PARTICLE_FRAME_SIZE];
-	unsigned char* compressedFrame = new unsigned char[PARTICLE_COUNT * PARTICLE_FRAME_SIZE];
+	int frameCount = 0;
+	int particleCount = 0;
+	getFrameData(dirPath, frameCount, particleCount);
+	const size_t PARTICLE_FRAME_SIZE = 32;	
+
+	unsigned char* uncompressedFrame = new unsigned char[particleCount * PARTICLE_FRAME_SIZE];
+	unsigned char* compressedFrame = new unsigned char[particleCount * PARTICLE_FRAME_SIZE];
 
 	fill(compressedFrame, compressedFrame + sizeof(compressedFrame), 0);
 	fill(uncompressedFrame, uncompressedFrame + sizeof(uncompressedFrame), 0);
 
 	cout << "Starting compression..." << endl;
 	cout << "Directory: " << dirPath  << endl;
-	cout << "Frame count: " << FRAME_COUNT << endl;
-	cout << "Particle count: " << PARTICLE_COUNT << endl;	
+	cout << "Frame count: " << frameCount << endl;
+	cout << "Particle count: " << particleCount << endl;	
 
 	string line;
 	size_t tokenIndices[7];
@@ -38,17 +79,16 @@ int _tmain(int argc, TCHAR *argv[])
 	char* ping_c_str;
 	char* pong_c_str;
 
-	float x, y, z;
+	float type, id, x, y, z;
 
-	unsigned long long frameIndices[FRAME_COUNT];
+	unsigned long long* frameIndices = new unsigned long long[frameCount];
 	
 	ofstream dataFile;
 	ofstream indexFile;
 
 	dataFile.open(dataFilePath, ios::binary);
+	
 
-	DIR *dir;
-	struct dirent *entry;
 	if ((dir = opendir(dirPath.c_str())) != NULL)
 	{
 		int frameCounter = 0;
@@ -58,7 +98,7 @@ int _tmain(int argc, TCHAR *argv[])
 		{
 			//cout << "File: " + strEntry << endl;
 
-			if (frameCounter >= FRAME_COUNT) break;
+			if (frameCounter >= frameCount) break;
 
 			string strEntry = entry->d_name;
 			size_t findRes = strEntry.find(".dat");
@@ -73,18 +113,23 @@ int _tmain(int argc, TCHAR *argv[])
 			ifstream File(filePath);
 			if (File)
 			{
-				if (frameCounter %100 == 0) cout << "Compressing frame: " << frameCounter << " out of: " << FRAME_COUNT << endl;
+				if (frameCounter %100 == 0) cout << "Compressing frame: " << frameCounter << " out of: " << frameCount << endl;
 								
 				int particleCounter = 0;
 				
 				while (getline(File, line))
 				{
-					size_t first = line.find(" ");
-					size_t second = line.find(" ", first + 1);
-
-					x = strtod(line.c_str() + second + 1, &ping_c_str);
+					type = strtod(line.c_str(), &ping_c_str);
+					id = strtod(ping_c_str, &pong_c_str);
+					x = strtod(pong_c_str, &ping_c_str);
 					y = strtod(ping_c_str, &pong_c_str);
 					z = strtod(pong_c_str, &ping_c_str);
+
+					unsigned char *ptype = (unsigned char *)&type;
+					std::copy(ptype, ptype + sizeof(float), uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 0 * sizeof(float));
+
+					unsigned char *pid = (unsigned char *)&id;
+					std::copy(pid, pid + sizeof(float), uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 1 * sizeof(float));
 
 					unsigned char *px = (unsigned char *)&x;
 					std::copy(px, px + sizeof(float), uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 2 * sizeof(float));
@@ -95,17 +140,21 @@ int _tmain(int argc, TCHAR *argv[])
 					unsigned char *pz = (unsigned char *)&z;
 					std::copy(pz, pz + sizeof(float), uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 4 * sizeof(float));
 
-					/*x = *(float*)(uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 2 * sizeof(float));
+					/*type = *(float*)(uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 0 * sizeof(float));
+					id = *(float*)(uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 1 * sizeof(float));
+					x = *(float*)(uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 2 * sizeof(float));
 					y = *(float*)(uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 3 * sizeof(float));
-					z = *(float*)(uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 4 * sizeof(float));*/
+					z = *(float*)(uncompressedFrame + PARTICLE_FRAME_SIZE * particleCounter + 4 * sizeof(float));
+
+					cout << type << " : " << id << " : " << x << " : " << y << " : " << z << endl;*/
 					
 					particleCounter++;
 				}
 
 				File.close();
 				
-				uLongf compressedFrameSize = PARTICLE_COUNT * PARTICLE_FRAME_SIZE;				
-				int res = compress(compressedFrame, &compressedFrameSize, uncompressedFrame, PARTICLE_COUNT * PARTICLE_FRAME_SIZE);
+				uLongf compressedFrameSize = particleCount * PARTICLE_FRAME_SIZE;				
+				int res = compress(compressedFrame, &compressedFrameSize, uncompressedFrame, particleCount * PARTICLE_FRAME_SIZE);
 				
 				///*cout << "Uncompressed frame size: " << PARTICLE_COUNT * PARTICLE_FRAME_SIZE << endl;
 				//cout << "Compressed frame size: " << compressedFrameSize << endl;*/
@@ -126,7 +175,7 @@ int _tmain(int argc, TCHAR *argv[])
 		
 		// Open index.bin
 		indexFile.open(indexFilePath, ios::binary);
-		indexFile.write(reinterpret_cast<char*>(frameIndices), FRAME_COUNT * sizeof(unsigned long long));
+		indexFile.write(reinterpret_cast<char*>(frameIndices), frameCount * sizeof(unsigned long long));
 		indexFile.close();
 	}
 
