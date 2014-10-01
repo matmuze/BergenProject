@@ -2,7 +2,7 @@ REACTION_DATA_OUTPUT
 {
   ITERATION_LIST = [[1 TO iters STEP 1]]
   HEADER = ON
-  {TRIGGER[react1, Scene.Cube]} > "rxn_data/reactions.txt"
+  {TRIGGER[react1, Scene.mito]} > "rxn_data/reactions.txt"
 
 }
 
